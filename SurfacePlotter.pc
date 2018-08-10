@@ -1,0 +1,12 @@
+prefix=/usr/local
+exec_prefix=/usr/local
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: SurfacePlotter
+Description: Library for plotting 3d surfaces in real-time
+Version: 0.0.1
+
+Requires:
+Libs: -L${libdir} -3dSurfacePlotter -lglut -lGLU -lGL
+Cflags: -I${includedir} -std=c++17 -g 
