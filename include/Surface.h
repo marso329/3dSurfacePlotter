@@ -67,6 +67,9 @@ protected:
 	;
 	virtual void init()=0;
 	virtual bool update()=0;
+	bool updateRequired(){
+		return m_tainted.size()!=0;
+	}
 	const std::size_t m_rows = 0;
 	const std::size_t m_cols = 0;
 	GLuint m_vao = 0;
@@ -87,7 +90,7 @@ protected:
 	//std::size_t m_currentRow = 0;
 	std::size_t m_oldestRow=0;
 
-	GLfloat m_offset = 0.0;
+	GLfloat m_offset = 0;
 	std::vector<Tained> m_tainted;
 	std::atomic<bool> m_modifying = false;
 
@@ -97,6 +100,8 @@ protected:
 	float m_pixelsPerRow=1.0;
 
 	float m_pixelsPerColumn=1.0;
+
+	bool m_firstShift=true;
 
 private:
 
@@ -142,11 +147,14 @@ public:
 		memcpy((m_data + m_oldestRow * m_cols), data, m_cols * sizeof(T));
 		//Which part to update in the texture
 		Tained temp;
+		if(!m_firstShift){
 		if (shift == UP) {
-			temp.textureOffsetShift += 1.0 / static_cast<float>(m_cols);
+			temp.textureOffsetShift -= 1.0 / static_cast<float>(m_rows);
 		} else if (shift == DOWN) {
-			temp.textureOffsetShift -= 1.0 / static_cast<float>(m_cols);
+			temp.textureOffsetShift += 1.0 / static_cast<float>(m_rows);
 		}
+		}
+		m_firstShift=false;
 		temp.elements = m_cols;
 		temp.row = m_oldestRow;
 		m_tainted.push_back(temp);
@@ -173,6 +181,7 @@ protected:
 			return false;
 		}
 		glBindTexture(GL_TEXTURE_2D, m_tex);
+		printError("update: binding texture");
 		bool somethingToUpdate=false;
 
 
@@ -190,8 +199,22 @@ protected:
 					GL_SHORT, //input type
 					m_textureData //data
 					);
+			int w, h;
+			int miplevel = 0;
+			glGetTexLevelParameteriv(GL_TEXTURE_2D, miplevel, GL_TEXTURE_WIDTH, &w);
+			glGetTexLevelParameteriv(GL_TEXTURE_2D, miplevel, GL_TEXTURE_HEIGHT, &h);
+			printError("update: glTexSubImage");
+			m_offset+=element.textureOffsetShift;
+			//m_offset=float(element.row) / float(m_rows);
+			if(m_offset>1.0-1.0/m_rows){
+				m_offset=0.0;
+			}
+			else if(m_offset<0){
+				m_offset=1.0;
+			}
 			somethingToUpdate=true;
 		}
+		m_tainted.clear();
 		m_modifying = false;
 		return somethingToUpdate;
 	}
@@ -225,11 +248,11 @@ protected:
 		// set up generic attrib pointers
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat),
-				(char*) 0 + 0 * sizeof(GLfloat));
+				reinterpret_cast<char*>( 0) + 0 * sizeof(GLfloat));
 
 		glEnableVertexAttribArray(1);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat),
-				(char*) 0 + 3 * sizeof(GLfloat));
+				reinterpret_cast< char*>(0) + 3 * sizeof(GLfloat));
 
 		printError("While setting up vertex and texture index buffer");
 
@@ -283,8 +306,8 @@ protected:
 		glTexImage2D(GL_PROXY_TEXTURE_2D,     // Type of texture
 				0,       // Pyramid level (for mip-mapping) - 0 is the top level
 				GL_RGB,            // Internal colour format to convert to
-				m_rows, // Image width  i.e. 640 for Kinect in standard mode
-				m_cols, // Image height i.e. 480 for Kinect in standard mode
+				m_cols, // Image width  i.e. 640 for Kinect in standard mode
+				m_rows, // Image height i.e. 480 for Kinect in standard mode
 				0,              // Border width in pixels (can either be 1 or 0)
 				GL_RED, // Input image format (i.e. GL_RGB, GL_RGBA, GL_BGR etc.)
 				GL_SHORT,  // Image data type
@@ -298,8 +321,8 @@ protected:
 		glTexImage2D(GL_TEXTURE_2D,     // Type of texture
 				0,       // Pyramid level (for mip-mapping) - 0 is the top level
 				GL_RGB,            // Internal colour format to convert to
-				m_rows, // Image width  i.e. 640 for Kinect in standard mode
-				m_cols, // Image height i.e. 480 for Kinect in standard mode
+				m_cols, // Image width  i.e. 640 for Kinect in standard mode
+				m_rows, // Image height i.e. 480 for Kinect in standard mode
 				0,              // Border width in pixels (can either be 1 or 0)
 				GL_RED, // Input image format (i.e. GL_RGB, GL_RGBA, GL_BGR etc.)
 				GL_SHORT,  // Image data type

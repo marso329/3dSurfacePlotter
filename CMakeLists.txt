@@ -35,12 +35,14 @@ add_library(SurfacePlotter SHARED
     src/SurfacePlotter.cxx src/Surface.cxx src/CommonFunction.cxx src/VectorUtils3.c
 )
 
+
+
 #Not needed but SurfacePlotter.so.1 will symlink to SurfacePlotter.so.0.0.1
 set_target_properties(SurfacePlotter PROPERTIES SOVERSION 1)
 
 set_target_properties(SurfacePlotter PROPERTIES PUBLIC_HEADER "include/SurfacePlotter.h")
 
-target_include_directories(SurfacePlotter PUBLIC include)
+target_include_directories(SurfacePlotter PUBLIC include )
 
 #Rules on how to install it
 install(TARGETS SurfacePlotter
@@ -54,7 +56,7 @@ configure_file(SurfacePlotter.pc.in SurfacePlotter.pc @ONLY)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/SurfacePlotter.pc DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
 
 #This must be linked against boost
-target_link_libraries(SurfacePlotter  LINK_PUBLIC ${CMAKE_SHARED_LINKER_FLAGS} )
+target_link_libraries(SurfacePlotter  LINK_PUBLIC ${CMAKE_SHARED_LINKER_FLAGS})
 
 #To compile examples
 add_subdirectory(examples)

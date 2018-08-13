@@ -17,10 +17,12 @@ void main() {
    	fcolor = vec4(1,0,0,0);
 	newposition=vposition;
 	newtexcoord=vtexcoord;
-	newtexcoord.y+=offset;
-	if(newtexcoord.y>1.0){
-	newtexcoord.y-=1.0;
+	if(offset>=newtexcoord.y){
+	newtexcoord.y=abs(newtexcoord.y-offset);
 	}
-	newposition.y=texture(texUnit, newtexcoord).r*4.0;
+	else{
+	newtexcoord.y=1.0-abs(newtexcoord.y-offset);
+	}
+	newposition.y=texture(texUnit, newtexcoord).r;
   	gl_Position = projMatrix*cameraMatrix*newposition;
 }

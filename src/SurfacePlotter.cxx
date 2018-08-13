@@ -87,8 +87,17 @@ void SurfacePlotter::Draw(){
 	std::size_t timeSinceLastFrame=nanoseconds.count()-timeLastFrame;
 	timeLastFrame=nanoseconds.count();
 	double fps=1.0/(static_cast<float>(timeSinceLastFrame)/1000000000.0);
-	std::cout<<"fps: "<<fps<<std::endl;
-
+	//std::cout<<"fps: "<<fps<<std::endl;
+	bool updateRequired=false;
+	for(auto element:m_surfaces){
+		if(element->updateRequired()){
+			updateRequired=true;
+		}
+	}
+	if(!updateRequired){
+		glutPostRedisplay();
+		return;
+	}
 
 	// clear first
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -102,16 +111,16 @@ for(auto element:m_surfaces){
 	glUniformMatrix4fv(glGetUniformLocation(element->m_shaderProgram, "cameraMatrix"), 1,
 	GL_TRUE, lookAtv(element->m_camera, element->m_looking, element->m_up).m);
 
-	glUniform1f(glGetUniformLocation(element->m_shaderProgram, "offset"),  element->m_offset);
 	printError("While setting up uniform variables");
 
 	glActiveTexture(GL_TEXTURE0);
 	printError("draw1");
 	glUniform1i(glGetUniformLocation(element->m_shaderProgram, "tex"),
 	GL_TEXTURE0);
+	printError("draw1.1");
 	if(element->update()){
-	std::cout<<"updated"<<std::endl;
 	}
+	glUniform1f(glGetUniformLocation(element->m_shaderProgram, "offset"),  element->m_offset);
 	printError("draw2");
 	glBindTexture(GL_TEXTURE_2D, element->m_tex);
 	glBindVertexArray(element->m_vao);
