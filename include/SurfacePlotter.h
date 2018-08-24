@@ -64,6 +64,8 @@ public:
 
 	void Keyboard(unsigned char key, int x_disp, int y_disp);
 
+	void KeyboardSpecial(int key, int x_disp, int y_disp);
+
 	void MouseMovement(int x,int y);
 
 	void MousePress(int button, int state, int x,int y);
@@ -94,6 +96,13 @@ private:
 	int m_maxTextureSize=0;
 
 	std::size_t timeLastFrame=0;
+	//used to keep track on if the mouse button is pressed or released
+	bool m_buttonReleased = true;
+	//used to store the mouse position from last iteration to know how much to move the looking_pos
+	int m_mouseX = 0;
+	int m_mouseY = 0;
+	float DISTANCE_TO_MOVE_MOUSE=0.05;
+	float DISTANCE_TO_MOVE_KEYBOARD=0.09;
 };
 
 //all of this is because of FreeGlut crap

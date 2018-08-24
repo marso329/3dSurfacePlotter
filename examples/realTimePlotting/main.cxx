@@ -19,10 +19,11 @@ surface->addRow(data->getData(),DOWN);
 }
 
 void updateSurface(Surface<int16_t>* surface){
-	RBOX::RBOXClient* client=new RBOX::RBOXClient("Plotting test");
-	std::vector<std::string> subscriptions={"ObsBox.LHC.ADT.B1H.Q7"};
+	RBOX::RBOXClient* client=new RBOX::RBOXClient("Plotting_test_opengl");
+	std::vector<std::string> subscriptions={"test0"};
 	std::function<void(RBOX::RBOXFrameStructure*)> bindedFunction =std::bind( addData, surface, std::placeholders::_1 );
 	client->addSubscription (subscriptions,bindedFunction);
+	client->setSeverity(RBOX::CLIENTSEVERITY::MEDIUM);
 	client->start();
 	int16_t* data=reinterpret_cast<int16_t*>(malloc(bunches*sizeof(int16_t)));
 	float angle=0;
