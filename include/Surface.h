@@ -145,6 +145,10 @@ public:
 
 		}
 		memcpy((m_data + m_oldestRow * m_cols), data, m_cols * sizeof(T));
+		for(std::size_t i=0;i<m_cols;i++){
+			*(m_data + m_oldestRow * m_cols+i)=(*(m_data + m_oldestRow * m_cols+i)+m_offset)*m_yscale;
+		}
+
 		//Which part to update in the texture
 		Tained temp;
 		if(!m_firstShift){
@@ -162,6 +166,13 @@ public:
 		m_oldestRow%=m_rows;
 		m_modifying = false;
 		return true;
+	}
+	void setYOffset(T value){
+		m_yoffset=value;
+	}
+
+	void setYScale(T value){
+		m_yscale=value;
 	}
 
 	void setPixelsPerRow(const float& pixelsPerRow){
@@ -375,6 +386,8 @@ private:
 	}
 
 	T* m_data = 0;
+	T m_yoffset=0;
+	T m_yscale=1;
 
 };
 }
