@@ -24,6 +24,7 @@ void updateSurface(Surface<int16_t>* surface){
 	std::function<void(RBOX::RBOXFrameStructure*)> bindedFunction =std::bind( addData, surface, std::placeholders::_1 );
 	client->addSubscription (subscriptions,bindedFunction);
 	client->setSeverity(RBOX::CLIENTSEVERITY::LOW);
+
 	client->start();
 }
 
