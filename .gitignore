@@ -1,0 +1,77 @@
+#Own ignores-----------------------------------------------------------------------------------------
+/lib
+/bin
+RBOX.pc
+/doc/*
+!/doc/CMakeLists.txt
+!/doc/Doxyfile.in
+RBOX.pc
+CMakeDoxyfile.in
+
+#doxygen ignores-----------------------------------------------------------------------------------------
+*~
+.*sw?
+\#*
+.DS_Store
+
+*.rej
+*.orig
+
+*.pro
+/packages/rpm/doxygen.spec
+*.idb
+*.pdb
+
+/doxygen_docs
+/doxygen.tag
+/build*
+
+#C++ ignores-----------------------------------------------------------------------------------------
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+
+#CMake ignores-----------------------------------------------------------------------------------------
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+*.cmake
+
+#Own ignores-----------------------------------------------------------------------------------------
+!config.cmake
