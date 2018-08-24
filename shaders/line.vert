@@ -12,9 +12,9 @@ vec4 newposition;
 vec2 newtexcoord;
 out vec4 fcolor;
 
+
 void main() {
 	//access the texture at position for this vertex
-   	fcolor = vec4(1,0,0,0);
 	newposition=vposition;
 	newtexcoord=vtexcoord;
 	if(offset>=newtexcoord.y){
@@ -24,5 +24,6 @@ void main() {
 	newtexcoord.y=1.0-abs(newtexcoord.y-offset);
 	}
 	newposition.y=texture(texUnit, newtexcoord).r;
-  	gl_Position = projMatrix*cameraMatrix*newposition;
+  	fcolor = vec4(newposition.y,0,0,0);
+	gl_Position = projMatrix*cameraMatrix*newposition;
 }

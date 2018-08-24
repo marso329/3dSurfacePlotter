@@ -36,7 +36,8 @@ int main(){
 	int16_t* data=reinterpret_cast<int16_t*>(calloc(turns*bunches,sizeof(int16_t)));
 	surface->addData(data);
 	surface->setPixelsPerColumn(0.01);
-	//surface->setPixelsPerRow(0.001);
+	surface->setYScale(20);
+	surface->setPixelsPerRow(0.01);
 	free(data);
 	//start RBOXClient thread
 	std::thread temp= std::thread(std::bind(updateSurface,surface));
